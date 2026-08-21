@@ -5,6 +5,7 @@ import com.gestor.dao.TaskDAO;
 import com.gestor.model.*;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +15,13 @@ public class TaskDAOImpl implements TaskDAO {
             "SELECT t.id_task, t.title, t.description, "
             + "t.id_status_task, st.status_name, st.status_order, "
             + "t.id_team, tm.team_name, tm.description AS team_description, "
-            + "t.id_created_by, p.first_name, p.last_name, p.email, "
+            + "t.created_by, p.first_name, p.last_name, p.email, "
             + "p.id_type_person, typ.type_name, "
             + "t.created_at, t.updated_at "
             + "FROM task t "
             + "INNER JOIN status_task st ON t.id_status_task = st.id_status_task "
             + "INNER JOIN team tm ON t.id_team = tm.id_team "
-            + "INNER JOIN person p ON t.id_created_by = p.id_person "
+            + "INNER JOIN person p ON t.created_by = p.id_person "
             + "INNER JOIN type_person typ ON p.id_type_person = typ.id_type_person ";
 
     private Task mapRow(ResultSet rs) throws SQLException {
@@ -42,7 +43,7 @@ public class TaskDAOImpl implements TaskDAO {
         task.setTeam(team);
 
         Person createdBy = new Person();
-        createdBy.setIdPerson(rs.getInt("id_created_by"));
+        createdBy.setIdPerson(rs.getInt("created_by"));
         createdBy.setFirstName(rs.getString("first_name"));
         createdBy.setLastName(rs.getString("last_name"));
         createdBy.setEmail(rs.getString("email"));
@@ -98,7 +99,7 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public boolean save(Task entity) throws Exception {
-        String sql = "INSERT INTO task (title, description, id_status_task, id_team, id_created_by, created_at, updated_at) "
+        String sql = "INSERT INTO task (title, description, id_status_task, id_team, created_by, created_at, updated_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -107,8 +108,9 @@ public class TaskDAOImpl implements TaskDAO {
             ps.setInt(3, entity.getStatusTask().getIdStatusTask());
             ps.setInt(4, entity.getTeam().getIdTeam());
             ps.setInt(5, entity.getCreatedBy().getIdPerson());
-            ps.setTimestamp(6, entity.getCreatedAt() != null ? Timestamp.valueOf(entity.getCreatedAt()) : null);
-            ps.setTimestamp(7, entity.getUpdatedAt() != null ? Timestamp.valueOf(entity.getUpdatedAt()) : null);
+            LocalDateTime now = LocalDateTime.now();
+            ps.setTimestamp(6, Timestamp.valueOf(entity.getCreatedAt() != null ? entity.getCreatedAt() : now));
+            ps.setTimestamp(7, Timestamp.valueOf(entity.getUpdatedAt() != null ? entity.getUpdatedAt() : now));
             return ps.executeUpdate() > 0;
         }
     }
@@ -116,7 +118,7 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public boolean update(Task entity) throws Exception {
         String sql = "UPDATE task SET title = ?, description = ?, id_status_task = ?, id_team = ?, "
-                + "id_created_by = ?, created_at = ?, updated_at = ? WHERE id_task = ?";
+                + "created_by = ?, created_at = ?, updated_at = ? WHERE id_task = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, entity.getTitle());
@@ -124,8 +126,9 @@ public class TaskDAOImpl implements TaskDAO {
             ps.setInt(3, entity.getStatusTask().getIdStatusTask());
             ps.setInt(4, entity.getTeam().getIdTeam());
             ps.setInt(5, entity.getCreatedBy().getIdPerson());
-            ps.setTimestamp(6, entity.getCreatedAt() != null ? Timestamp.valueOf(entity.getCreatedAt()) : null);
-            ps.setTimestamp(7, entity.getUpdatedAt() != null ? Timestamp.valueOf(entity.getUpdatedAt()) : null);
+            LocalDateTime now = LocalDateTime.now();
+            ps.setTimestamp(6, Timestamp.valueOf(entity.getCreatedAt() != null ? entity.getCreatedAt() : now));
+            ps.setTimestamp(7, Timestamp.valueOf(entity.getUpdatedAt() != null ? entity.getUpdatedAt() : now));
             ps.setInt(8, entity.getIdTask());
             return ps.executeUpdate() > 0;
         }
@@ -176,7 +179,7 @@ public class TaskDAOImpl implements TaskDAO {
     @Override
     public List<Task> findByPerson(int idPerson) throws Exception {
         List<Task> list = new ArrayList<>();
-        String sql = BASE_QUERY + "WHERE t.id_created_by = ? ORDER BY t.created_at DESC";
+        String sql = BASE_QUERY + "WHERE t.created_by = ? ORDER BY t.created_at DESC";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idPerson);
