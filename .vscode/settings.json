@@ -1,0 +1,7 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.referencedLibraries": [
+        "gestor-tareas/lib/mysql-connector-j-8.2.0.jar",
+        "gestor-tareas/lib/LGoodDatePicker-11.2.1.jar"
+    ]
+}

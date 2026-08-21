@@ -1,0 +1,8 @@
+{
+    "java.autobuild.enabled": true,
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.referencedLibraries": [
+        "lib/mysql-connector-j-8.2.0.jar",
+        "lib/LGoodDatePicker-11.2.1.jar"
+    ]
+}

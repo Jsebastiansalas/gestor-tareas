@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Ejecutar Gestor de Tareas",
+            "request": "launch",
+            "mainClass": "com.gestor.Main",
+            "console": "internalConsole",
+            "stopOnEntry": false
+        }
+    ]
+}

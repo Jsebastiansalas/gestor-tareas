@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar proyecto",
+            "type": "shell",
+            "command": "javac",
+            "args": [
+                "--release", "21",
+                "-cp", "lib/mysql-connector-j-8.2.0.jar;lib/LGoodDatePicker-11.2.1.jar",
+                "-d", "target/classes",
+                "-sourcepath", "src/main/java",
+                "${workspaceFolder}/src/main/java/com/gestor/**/*.java"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$javac"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Ejecutar Gestor de Tareas",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-cp",
+                "target/classes;lib/mysql-connector-j-8.2.0.jar;lib/LGoodDatePicker-11.2.1.jar",
+                "com.gestor.Main"
+            ],
+            "group": "test",
+            "dependsOn": "Compilar proyecto",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ]
+}
