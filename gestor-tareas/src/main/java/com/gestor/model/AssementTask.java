@@ -2,6 +2,13 @@ package com.gestor.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla intermedia que resuelve la relación muchos a muchos entre Task y Person
+ * (asignación de una persona a una tarea con un rol específico).
+ * Representa la tabla "assement_task" de la base de datos.
+ * Campos: idAssementTask (clave primaria), task y person (claves foráneas),
+ * roleInTask (rol de la persona en la tarea) y assignedAt (fecha de asignación).
+ */
 public class AssementTask {
 
     private int idAssementTask;
@@ -63,6 +70,7 @@ public class AssementTask {
 
     @Override
     public String toString() {
+        // Devuelve todos los campos para depuración; no se usa en JComboBox porque no es un catálogo
         return "AssementTask{" +
                 "idAssementTask=" + idAssementTask +
                 ", task=" + task +

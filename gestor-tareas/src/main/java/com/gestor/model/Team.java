@@ -1,5 +1,11 @@
 package com.gestor.model;
 
+/**
+ * Equipo de trabajo al que pertenecen las personas y se asignan las tareas.
+ * Representa la tabla "team" de la base de datos.
+ * Campos: idTeam (clave primaria), teamName (nombre del equipo)
+ * y description (descripción opcional del equipo).
+ */
 public class Team {
 
     private int idTeam;
@@ -41,6 +47,7 @@ public class Team {
 
     @Override
     public String toString() {
+        // Devuelve solo el nombre del equipo para que los JComboBox muestren el equipo legible en lugar del objeto
         return teamName;
     }
 }

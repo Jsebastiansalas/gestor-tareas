@@ -1,5 +1,11 @@
 package com.gestor.model;
 
+/**
+ * Catálogo de estados Kanban de una tarea (To Do, In Progress, Done).
+ * Representa la tabla "status_task" de la base de datos.
+ * Campos: idStatusTask (clave primaria), statusName (nombre del estado)
+ * y statusOrder (orden que define la columna en el tablero Kanban).
+ */
 public class StatusTask {
 
     private int idStatusTask;
@@ -41,6 +47,7 @@ public class StatusTask {
 
     @Override
     public String toString() {
+        // Devuelve solo el nombre del estado para que los JComboBox muestren el estado legible en lugar del objeto
         return statusName;
     }
 }

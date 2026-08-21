@@ -2,6 +2,13 @@ package com.gestor.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tarea del proyecto dentro del tablero Kanban.
+ * Representa la tabla "task" de la base de datos.
+ * Campos: idTask (clave primaria), title, description,
+ * statusTask (FK a StatusTask, estado actual), team (FK al equipo responsable),
+ * createdBy (FK a Person, creador de la tarea) y las fechas createdAt/updatedAt.
+ */
 public class Task {
 
     private int idTask;
@@ -93,6 +100,7 @@ public class Task {
 
     @Override
     public String toString() {
+        // Devuelve todos los campos para depuración; las listas muestran el título mediante getTitle()
         return "Task{" +
                 "idTask=" + idTask +
                 ", title='" + title + '\'' +

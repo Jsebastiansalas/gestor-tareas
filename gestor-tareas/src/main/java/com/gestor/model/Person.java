@@ -1,5 +1,11 @@
 package com.gestor.model;
 
+/**
+ * Persona que participa en el proyecto (miembro del equipo).
+ * Representa la tabla "person" de la base de datos.
+ * Campos: idPerson (clave primaria), firstName, lastName, email
+ * y typePerson (relación N:1 con TypePerson que define su rol Scrum).
+ */
 public class Person {
 
     private int idPerson;
@@ -61,6 +67,7 @@ public class Person {
 
     @Override
     public String toString() {
+        // Devuelve "nombre apellido" para que los JComboBox muestren a la persona de forma legible
         return firstName + " " + lastName;
     }
 }

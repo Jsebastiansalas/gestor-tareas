@@ -9,8 +9,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementación JDBC de {@link com.gestor.dao.PersonDAO}.
+ * Realiza operaciones CRUD sobre la tabla person combinadas con un JOIN
+ * a type_person para traer el nombre del tipo de persona. findByTeam
+ * agrega además un JOIN con team_person para filtrar por equipo.
+ */
 public class PersonDAOImpl implements PersonDAO {
 
+    /** Mapea una fila del ResultSet (con datos del JOIN) a un objeto Person. */
     private Person mapRow(ResultSet rs) throws SQLException {
         Person p = new Person();
         p.setIdPerson(rs.getInt("id_person"));
@@ -28,6 +35,7 @@ public class PersonDAOImpl implements PersonDAO {
 
     @Override
     public Person findById(int id) throws Exception {
+        // JOIN con type_person para obtener el nombre del tipo de persona
         String sql = "SELECT p.id_person, p.first_name, p.last_name, p.email, "
                 + "p.id_type_person, tp.type_name "
                 + "FROM person p "
@@ -48,6 +56,7 @@ public class PersonDAOImpl implements PersonDAO {
     @Override
     public List<Person> findAll() throws Exception {
         List<Person> list = new ArrayList<>();
+        // JOIN con type_person para completar el tipo de cada persona
         String sql = "SELECT p.id_person, p.first_name, p.last_name, p.email, "
                 + "p.id_type_person, tp.type_name "
                 + "FROM person p "
@@ -64,6 +73,7 @@ public class PersonDAOImpl implements PersonDAO {
 
     @Override
     public boolean save(Person entity) throws Exception {
+        // Inserción de una persona con referencia a su tipo (clave foránea)
         String sql = "INSERT INTO person (first_name, last_name, email, id_type_person) VALUES (?, ?, ?, ?)";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -77,6 +87,7 @@ public class PersonDAOImpl implements PersonDAO {
 
     @Override
     public boolean update(Person entity) throws Exception {
+        // Actualización de datos y tipo de persona según la clave primaria
         String sql = "UPDATE person SET first_name = ?, last_name = ?, email = ?, id_type_person = ? WHERE id_person = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -91,6 +102,7 @@ public class PersonDAOImpl implements PersonDAO {
 
     @Override
     public boolean delete(int id) throws Exception {
+        // Eliminación por clave primaria
         String sql = "DELETE FROM person WHERE id_person = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -102,6 +114,7 @@ public class PersonDAOImpl implements PersonDAO {
     @Override
     public List<Person> findByTeam(int idTeam) throws Exception {
         List<Person> list = new ArrayList<>();
+        // JOIN con team_person para obtener solo las personas de un equipo
         String sql = "SELECT p.id_person, p.first_name, p.last_name, p.email, "
                 + "p.id_type_person, tp.type_name "
                 + "FROM person p "

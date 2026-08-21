@@ -14,6 +14,11 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Panel de gestion de personas (CRUD completo).
+ * Incluye tabla de registros, busqueda en tiempo real y formulario
+ * modal para crear/editar con combo de roles (tipos de persona).
+ */
 public class PersonasPanel extends JPanel {
 
     private final PersonService personService = new PersonService();
@@ -23,6 +28,7 @@ public class PersonasPanel extends JPanel {
     private DefaultTableModel tableModel;
     private JTextField txtSearch;
     private JLabel lblStatus;
+    // Cache en memoria para la busqueda sin recargar de la BD
     private List<Person> allPersons = new ArrayList<>();
     private List<TypePerson> allTypes = new ArrayList<>();
 
@@ -38,6 +44,7 @@ public class PersonasPanel extends JPanel {
         loadData();
     }
 
+    // Construye la interfaz: titulo, toolbar, tabla y barra de estado
     private void initUI() {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(BG_CONTENT);
@@ -60,6 +67,7 @@ public class PersonasPanel extends JPanel {
         txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         txtSearch.setPreferredSize(new Dimension(220, 32));
         txtSearch.putClientProperty("JTextField.placeholderText", "Buscar por nombre...");
+        // Busqueda en tiempo real al escribir en el campo de texto
         txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent e) {
                 filterTable();
@@ -116,6 +124,7 @@ public class PersonasPanel extends JPanel {
         table.getColumnModel().getColumn(3).setPreferredWidth(200);
         table.getColumnModel().getColumn(4).setPreferredWidth(100);
 
+        // Doble clic sobre una fila abre el dialogo de edicion
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -144,6 +153,7 @@ public class PersonasPanel extends JPanel {
         btnRefresh.addActionListener(e -> loadData());
     }
 
+    // Crea un boton de toolbar con color propio y efecto hover
     private JButton createToolbarButton(String text, Color bgColor) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -167,6 +177,7 @@ public class PersonasPanel extends JPanel {
         return btn;
     }
 
+    // Carga personas y roles desde la BD y llena la tabla
     private void loadData() {
         try {
             allPersons = personService.listarTodos();
@@ -181,6 +192,7 @@ public class PersonasPanel extends JPanel {
         }
     }
 
+    // Vuelca la lista de personas en el modelo de la tabla
     private void populateTable(List<Person> persons) {
         tableModel.setRowCount(0);
         for (Person p : persons) {
@@ -195,6 +207,7 @@ public class PersonasPanel extends JPanel {
         }
     }
 
+    // Filtra la tabla en memoria por nombre, apellido o email
     private void filterTable() {
         String query = txtSearch.getText().trim().toLowerCase();
         if (query.isEmpty()) {
@@ -213,6 +226,7 @@ public class PersonasPanel extends JPanel {
         lblStatus.setText("Resultados: " + filtered.size());
     }
 
+    // Obtiene la persona seleccionada en la tabla (o null si no hay)
     private Person getSelectedPerson() {
         int row = table.getSelectedRow();
         if (row < 0) {
@@ -230,6 +244,7 @@ public class PersonasPanel extends JPanel {
         return null;
     }
 
+    // Abre el dialogo de edicion para la persona seleccionada
     private void editSelectedPerson() {
         Person person = getSelectedPerson();
         if (person != null) {
@@ -237,6 +252,7 @@ public class PersonasPanel extends JPanel {
         }
     }
 
+    // Elimina la persona seleccionada tras confirmacion del usuario
     private void deleteSelectedPerson() {
         Person person = getSelectedPerson();
         if (person == null) return;
@@ -257,6 +273,7 @@ public class PersonasPanel extends JPanel {
         }
     }
 
+    // Dialogo modal para crear o editar una persona con combo de roles
     private void showPersonDialog(Person person) {
         boolean editing = person != null;
         String title = editing ? "Editar Persona" : "Nueva Persona";

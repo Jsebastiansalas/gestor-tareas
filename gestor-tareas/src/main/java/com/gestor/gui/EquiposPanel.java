@@ -18,6 +18,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Panel de gestion de equipos con vista master-detail.
+ * Usa un JSplitPane: tabla de equipos arriba y miembros del equipo
+ * seleccionado abajo. Filtra personas ya asignadas (anti-duplicado).
+ */
 public class EquiposPanel extends JPanel {
 
     private final TeamService teamService = new TeamService();
@@ -31,6 +36,7 @@ public class EquiposPanel extends JPanel {
     private JTextField txtSearch;
     private JLabel lblStatus;
     private List<Team> allTeams = new ArrayList<>();
+    // Miembros del equipo actualmente seleccionado
     private List<TeamPerson> currentMembers = new ArrayList<>();
 
     private static final Color BG_CONTENT = MainFrame.getBgContent();
@@ -45,6 +51,7 @@ public class EquiposPanel extends JPanel {
         cargarEquipos();
     }
 
+    // Construye la interfaz: toolbar, tabla de equipos, panel de miembros y split
     private void initUI() {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(BG_CONTENT);
@@ -122,6 +129,7 @@ public class EquiposPanel extends JPanel {
         teamTable.getColumnModel().getColumn(3).setPreferredWidth(80);
         teamTable.getColumnModel().getColumn(3).setMaxWidth(100);
 
+        // Clic simple carga miembros; doble clic abre edicion del equipo
         teamTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -132,6 +140,7 @@ public class EquiposPanel extends JPanel {
             }
         });
 
+        // Al cambiar la seleccion del equipo se recargan sus miembros
         teamTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 loadTeamMembers();
@@ -147,7 +156,7 @@ public class EquiposPanel extends JPanel {
         topSection.add(topContainer, BorderLayout.NORTH);
         topSection.add(teamScroll, BorderLayout.CENTER);
 
-        // Bottom section - Members
+        // Seccion inferior (detalle): miembros del equipo seleccionado
         JPanel memberPanel = new JPanel(new BorderLayout());
         memberPanel.setBackground(BG_CONTENT);
         memberPanel.setBorder(BorderFactory.createTitledBorder(
@@ -214,6 +223,7 @@ public class EquiposPanel extends JPanel {
         memberPanel.add(memberToolbar, BorderLayout.NORTH);
         memberPanel.add(memberScroll, BorderLayout.CENTER);
 
+        // Split vertical: equipos arriba, miembros abajo
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topSection, memberPanel);
         splitPane.setDividerLocation(350);
         splitPane.setDividerSize(6);
@@ -238,6 +248,7 @@ public class EquiposPanel extends JPanel {
         btnRemoveMember.addActionListener(e -> removeSelectedMember());
     }
 
+    // Crea un boton de toolbar con color propio y efecto hover
     private JButton createToolbarButton(String text, Color bgColor) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -261,6 +272,7 @@ public class EquiposPanel extends JPanel {
         return btn;
     }
 
+    // Carga los equipos desde la BD y limpia la tabla de miembros
     public void cargarEquipos() {
         try {
             allTeams = teamService.listarTodos();
@@ -278,6 +290,7 @@ public class EquiposPanel extends JPanel {
         }
     }
 
+    // Llena la tabla de equipos incluyendo el conteo de miembros
     private void populateTeamTable(List<Team> teams) {
         teamTableModel.setRowCount(0);
         for (Team t : teams) {
@@ -295,6 +308,7 @@ public class EquiposPanel extends JPanel {
         }
     }
 
+    // Filtra equipos en memoria por nombre o descripcion
     private void filterTable() {
         String query = txtSearch.getText().trim().toLowerCase();
         if (query.isEmpty()) {
@@ -312,6 +326,7 @@ public class EquiposPanel extends JPanel {
         lblStatus.setText("Resultados: " + filtered.size());
     }
 
+    // Obtiene el equipo seleccionado en la tabla (o null si no hay)
     private Team getSelectedTeam() {
         int row = teamTable.getSelectedRow();
         if (row < 0) {
@@ -329,6 +344,7 @@ public class EquiposPanel extends JPanel {
         return null;
     }
 
+    // Carga los miembros del equipo seleccionado en la tabla inferior
     private void loadTeamMembers() {
         Team team = getSelectedTeam();
         if (team == null) {

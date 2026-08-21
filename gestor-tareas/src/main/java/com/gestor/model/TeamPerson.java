@@ -2,6 +2,13 @@ package com.gestor.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Tabla intermedia que resuelve la relación muchos a muchos entre Team y Person
+ * (una persona puede pertenecer a varios equipos y un equipo tener varias personas).
+ * Representa la tabla "team_person" de la base de datos.
+ * Campos: idTeamPerson (clave primaria), team y person (claves foráneas)
+ * y joinedAt (fecha en que la persona se unió al equipo).
+ */
 public class TeamPerson {
 
     private int idTeamPerson;
@@ -53,6 +60,7 @@ public class TeamPerson {
 
     @Override
     public String toString() {
+        // Devuelve todos los campos para depuración; no se usa en JComboBox porque no es un catálogo
         return "TeamPerson{" +
                 "idTeamPerson=" + idTeamPerson +
                 ", team=" + team +

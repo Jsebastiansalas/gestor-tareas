@@ -4,11 +4,18 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Ventana principal de la aplicacion.
+ * Contiene un sidebar oscuro con botones de navegacion y un CardLayout
+ * para alternar entre los paneles (Personas, Equipos, Tareas).
+ * Define la paleta de colores del tema usada por el resto de paneles.
+ */
 public class MainFrame extends JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private JPanel sidebar;
 
+    // Paleta de colores del tema oscuro/claro de la aplicacion
     private static final Color BG_DARK = new Color(45, 52, 54);
     private static final Color BG_SIDEBAR = new Color(34, 40, 49);
     private static final Color ACCENT = new Color(0, 122, 204);
@@ -26,6 +33,7 @@ public class MainFrame extends JFrame {
         setMinimumSize(new Dimension(900, 600));
         setLocationRelativeTo(null);
 
+        // Aplica el look and feel del sistema operativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
@@ -33,6 +41,7 @@ public class MainFrame extends JFrame {
         initUI();
     }
 
+    // Construye la interfaz: sidebar con navegacion y panel central con CardLayout
     private void initUI() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(BG_CONTENT);
@@ -81,6 +90,7 @@ public class MainFrame extends JFrame {
         showPanel("personas", btnPersonas);
     }
 
+    // Crea un boton plano del sidebar con efecto hover
     private JButton createSidebarButton(String text) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -111,6 +121,7 @@ public class MainFrame extends JFrame {
         return btn;
     }
 
+    // Muestra el panel indicado y resalta el boton activo del sidebar
     public void showPanel(String name, JButton selectedButton) {
         cardLayout.show(contentPanel, name);
         if (activeButton != null) {
@@ -122,6 +133,7 @@ public class MainFrame extends JFrame {
         activeButton.setForeground(TEXT_WHITE);
     }
 
+    // Crea un panel provisional mostrado hasta que Main inyecte los paneles reales
     private JPanel createPlaceholderPanel(String text) {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(BG_CONTENT);
@@ -132,6 +144,7 @@ public class MainFrame extends JFrame {
         return p;
     }
 
+    // Reemplaza el panel provisional por un panel real bajo el mismo nombre
     public void setPanel(String name, JPanel panel) {
         for (Component c : contentPanel.getComponents()) {
             if (c.getName() != null && c.getName().equals(name)) {
@@ -144,6 +157,7 @@ public class MainFrame extends JFrame {
         cardLayout.show(contentPanel, name);
     }
 
+    // Getters estaticos para que los paneles accedan a los colores del tema
     public static Color getBgDark() { return BG_DARK; }
     public static Color getBgSidebar() { return BG_SIDEBAR; }
     public static Color getAccent() { return ACCENT; }

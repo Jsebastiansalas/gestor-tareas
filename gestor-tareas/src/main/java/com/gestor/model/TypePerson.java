@@ -1,5 +1,11 @@
 package com.gestor.model;
 
+/**
+ * Catálogo de roles Scrum que puede tener una persona en el proyecto
+ * (por ejemplo: Product Owner, Scrum Master, Developer).
+ * Representa la tabla "type_person" de la base de datos.
+ * Campos: idTypePerson (clave primaria) y typeName (nombre del rol).
+ */
 public class TypePerson {
 
     private int idTypePerson;
@@ -31,6 +37,7 @@ public class TypePerson {
 
     @Override
     public String toString() {
+        // Devuelve solo el nombre del rol para que los JComboBox muestren el tipo legible en lugar del objeto
         return typeName;
     }
 }
